@@ -11,9 +11,9 @@ def load_distance_matrix(filename):
     return df.values.astype(float)
 
 class GeneticAlgorithmTSP:
-    def __init__(self, dist_matrix, pop_size=100, generations=500,
+    def __init__(self, dist_matrix, pop_size=200, generations=800,
                  tournament_size=5, crossover_rate=0.8, mutation_rate=0.2,
-                 local_search_prob=0.1, crossover_type='OX'):
+                 local_search_prob=0.8, crossover_type='OX'):
         self.dist_matrix = dist_matrix
         self.n = dist_matrix.shape[0]
         self.pop_size = pop_size
@@ -168,6 +168,10 @@ class GeneticAlgorithmTSP:
 
 if __name__ == "__main__":
     dist_matrix = load_distance_matrix("tsp_data_100_distance_matrix.csv")
-    ga = GeneticAlgorithmTSP(dist_matrix)
+    ga = GeneticAlgorithmTSP(dist_matrix,
+                             pop_size=200,
+                             generations=800,
+                             crossover_type='OX',
+                             local_search_prob=0.8)
     best_tour, best_distance, _ = ga.evolve()
     print("Best distance:", best_distance)
