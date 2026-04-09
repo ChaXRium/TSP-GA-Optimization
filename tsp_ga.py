@@ -70,6 +70,18 @@ class GeneticAlgorithmTSP:
             individual[i], individual[j] = individual[j], individual[i]
         return individual
 
+    def two_opt_local_search(self, individual):
+        """Clean & fast single-pass 2-opt local search"""
+        for i in range(self.n - 1):
+            for j in range(i + 2, self.n):
+                d1 = (self.dist_matrix[individual[i]][individual[i + 1]] +
+                      self.dist_matrix[individual[j]][individual[(j + 1) % self.n]])
+                d2 = (self.dist_matrix[individual[i]][individual[j]] +
+                      self.dist_matrix[individual[i + 1]][individual[(j + 1) % self.n]])
+                if d2 < d1:
+                    individual[i + 1:j + 1] = individual[i + 1:j + 1][::-1]
+        return individual
+
     def evolve(self):
         population = self.create_population()
         best_distances = []
@@ -91,9 +103,11 @@ class GeneticAlgorithmTSP:
                 else:
                     next_pop.extend([selected[i][:], selected[i + 1][:] if i + 1 < self.pop_size else selected[i][:]])
 
-            # Mutation
-            for ind in next_pop:
+            # Mutation + 2-opt (only on first 20)
+            for idx, ind in enumerate(next_pop):
                 self.swap_mutation(ind)
+                if random.random() < self.local_search_prob and idx < 20:
+                    self.two_opt_local_search(ind)
 
             # Basic Elitism
             best_idx = np.argmin(fitnesses)
