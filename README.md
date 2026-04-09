@@ -10,7 +10,7 @@ The objective is to find the shortest possible route that visits each city exact
 
 The solution was developed as group coursework for the module **PUSL2100 Evolutionary Computing** at the University of Plymouth (NSBM Green University).
 
-**Best distance achieved:** `XXX.XX` (replace with your actual best distance from the final run)
+**Best distance achieved:** `793` (replace with your actual best distance from the final run)
 
 ---
 
@@ -38,7 +38,7 @@ The solution was developed as group coursework for the module **PUSL2100 Evoluti
 ```bash
 pip install pandas numpy matplotlib tqdm numba
 ```
-### 33Used libraries:
+### Used libraries:
 
 - pandas – loading the distance matrix
 - numpy – array operations and random permutations
@@ -46,3 +46,16 @@ pip install pandas numpy matplotlib tqdm numba
 - tqdm – progress bar during evolution
 - numba – fast JIT-compiled fitness evaluation
 
+How to Run
+
+Clone the repository:Bashgit clone https://github.com/ChaXRium/TSP-GA-Optimization.git
+cd TSP-GA-Optimization
+Install dependencies:Bashpip install pandas numpy matplotlib tqdm numba
+Run the Genetic Algorithm:Bashpython tsp_ga.py
+
+The script will:
+
+Evolve the population for 800 generations
+Print progress every 50 generations
+Output the best tour found and its total distance
+Save a convergence plot (convergence_plot_OX_2opt.png)
