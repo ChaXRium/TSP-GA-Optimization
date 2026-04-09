@@ -37,7 +37,7 @@ The solution was developed as group coursework for the module **PUSL2100 Evoluti
 ### Python Dependencies
 ```bash
 pip install pandas numpy matplotlib tqdm numba
-
+```
 ##33Used libraries:
 
 pandas – loading the distance matrix
