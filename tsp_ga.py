@@ -3,6 +3,7 @@ import numpy as np
 import random
 import time
 from tqdm import tqdm
+from numba import njit
 
 def load_distance_matrix(filename):
     df = pd.read_csv(filename, index_col=0)
@@ -28,12 +29,17 @@ class GeneticAlgorithmTSP:
     def create_population(self):
         return [self.create_individual() for _ in range(self.pop_size)]
 
-    def calculate_fitness(self, individual):
+    @staticmethod
+    @njit(fastmath=True)
+    def calculate_fitness_numba(dist_matrix, individual):
         n = len(individual)
         distance = 0.0
         for i in range(n):
-            distance += self.dist_matrix[individual[i]][individual[(i + 1) % n]]
+            distance += dist_matrix[individual[i]][individual[(i + 1) % n]]
         return distance
+
+    def calculate_fitness(self, individual):
+        return GeneticAlgorithmTSP.calculate_fitness_numba(self.dist_matrix, np.array(individual))
 
     def tournament_selection(self, population, fitnesses):
         selected = []
