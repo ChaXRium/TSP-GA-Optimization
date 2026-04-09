@@ -38,10 +38,11 @@ The solution was developed as group coursework for the module **PUSL2100 Evoluti
 ```bash
 pip install pandas numpy matplotlib tqdm numba
 ```
-##33Used libraries:
+### 33Used libraries:
 
-pandas – loading the distance matrix
-numpy – array operations and random permutations
-matplotlib – generating convergence plots
-tqdm – progress bar during evolution
-numba – fast JIT-compiled fitness evaluation
+- pandas – loading the distance matrix
+- numpy – array operations and random permutations
+- matplotlib – generating convergence plots
+- tqdm – progress bar during evolution
+- numba – fast JIT-compiled fitness evaluation
+
