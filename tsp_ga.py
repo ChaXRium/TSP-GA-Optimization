@@ -64,6 +64,12 @@ class GeneticAlgorithmTSP:
             selected.append(population[winner][:])
         return selected
 
+    def swap_mutation(self, individual):
+        if random.random() < self.mutation_rate:
+            i, j = random.sample(range(self.n), 2)
+            individual[i], individual[j] = individual[j], individual[i]
+        return individual
+
     def evolve(self):
         population = self.create_population()
         best_distances = []
@@ -84,6 +90,14 @@ class GeneticAlgorithmTSP:
                     next_pop.extend([child1, child2])
                 else:
                     next_pop.extend([selected[i][:], selected[i + 1][:] if i + 1 < self.pop_size else selected[i][:]])
+
+            # Mutation
+            for ind in next_pop:
+                self.swap_mutation(ind)
+
+            # Basic Elitism
+            best_idx = np.argmin(fitnesses)
+            next_pop[0] = population[best_idx][:]
 
             population = next_pop
 
