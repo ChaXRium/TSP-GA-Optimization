@@ -29,6 +29,21 @@ class GeneticAlgorithmTSP:
     def create_population(self):
         return [self.create_individual() for _ in range(self.pop_size)]
 
+    def order_crossover(self, parent1, parent2):
+        """Order Crossover (OX)"""
+        size = len(parent1)
+        start, end = sorted(random.sample(range(size), 2))
+        child = [-1] * size
+        child[start:end] = parent1[start:end]
+        pos = end % size
+        for gene in parent2:
+            if gene not in child:
+                while child[pos] != -1:
+                    pos = (pos + 1) % size
+                child[pos] = gene
+                pos = (pos + 1) % size
+        return child
+
     @staticmethod
     @njit(fastmath=True)
     def calculate_fitness_numba(dist_matrix, individual):
@@ -64,11 +79,11 @@ class GeneticAlgorithmTSP:
             next_pop = []
             for i in range(0, self.pop_size, 2):
                 if random.random() < self.crossover_rate and i + 1 < self.pop_size:
-                    child1 = selected[i][:]
-                    child2 = selected[i+1][:]
+                    child1 = self.order_crossover(selected[i], selected[i + 1])
+                    child2 = self.order_crossover(selected[i + 1], selected[i])
                     next_pop.extend([child1, child2])
                 else:
-                    next_pop.extend([selected[i][:], selected[i+1][:]])
+                    next_pop.extend([selected[i][:], selected[i + 1][:] if i + 1 < self.pop_size else selected[i][:]])
 
             population = next_pop
 
