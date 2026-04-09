@@ -32,15 +32,40 @@ class GeneticAlgorithmTSP:
     def order_crossover(self, parent1, parent2):
         """Order Crossover (OX)"""
         size = len(parent1)
-        start, end = sorted(random.sample(range(size), 2))
         child = [-1] * size
+        start, end = sorted(random.sample(range(size), 2))
         child[start:end] = parent1[start:end]
+
         pos = end % size
+        for gene in parent2[end:] + parent2[:end]:
+            if gene not in child:
+                child[pos] = gene
+                pos = (pos + 1) % size
+        return child
+
+    def pmx_crossover(self, parent1, parent2):
+        """Partially Mapped Crossover (PMX)"""
+        size = len(parent1)
+        child = [-1] * size
+        start, end = sorted(random.sample(range(size), 2))
+        child[start:end] = parent1[start:end]
+
+        mapping = {}
+        for i in range(start, end):
+            mapping[parent2[i]] = parent1[i]
+
+        pos = 0
         for gene in parent2:
             if gene not in child:
                 while child[pos] != -1:
                     pos = (pos + 1) % size
-                child[pos] = gene
+                if gene in mapping:
+                    mapped_gene = mapping[gene]
+                    while mapped_gene in child:
+                        mapped_gene = mapping.get(mapped_gene, mapped_gene)
+                    child[pos] = mapped_gene
+                else:
+                    child[pos] = gene
                 pos = (pos + 1) % size
         return child
 
@@ -79,11 +104,17 @@ class GeneticAlgorithmTSP:
             next_pop = []
             for i in range(0, self.pop_size, 2):
                 if random.random() < self.crossover_rate and i + 1 < self.pop_size:
-                    child1 = self.order_crossover(selected[i], selected[i + 1])
-                    child2 = self.order_crossover(selected[i + 1], selected[i])
+                    parent1 = selected[i]
+                    parent2 = selected[i + 1]
+                    if self.crossover_type == 'PMX':
+                        child1 = self.pmx_crossover(parent1, parent2)
+                        child2 = self.pmx_crossover(parent2, parent1)
+                    else:
+                        child1 = self.order_crossover(parent1, parent2)
+                        child2 = self.order_crossover(parent2, parent1)
                     next_pop.extend([child1, child2])
                 else:
-                    next_pop.extend([selected[i][:], selected[i + 1][:] if i + 1 < self.pop_size else selected[i][:]])
+                    next_pop.extend([selected[i][:], selected[i + 1][:]])
 
             population = next_pop
 
