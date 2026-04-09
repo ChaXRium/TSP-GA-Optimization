@@ -4,6 +4,7 @@ import random
 import time
 from tqdm import tqdm
 from numba import njit
+import matplotlib.pyplot as plt
 
 def load_distance_matrix(filename):
     df = pd.read_csv(filename, index_col=0)
@@ -146,10 +147,22 @@ class GeneticAlgorithmTSP:
 
             population = next_pop
 
+        print(f"\n✅ Evolution finished in {time.time() - start_time:.1f} seconds")
         final_fitnesses = [self.calculate_fitness(ind) for ind in population]
         best_idx = np.argmin(final_fitnesses)
         best_tour = [int(city) for city in population[best_idx]]
         best_distance = final_fitnesses[best_idx]
+
+        # Convergence plot
+        plt.figure(figsize=(10, 5))
+        plt.plot(best_distances)
+        plt.title(f"GA Convergence - TSP 100 Cities ({self.crossover_type} + 2-opt)")
+        plt.xlabel("Generation")
+        plt.ylabel("Best Tour Distance")
+        plt.grid(True)
+        plt.savefig(f"convergence_plot_{self.crossover_type}_2opt.png")
+        plt.show()
+
         return best_tour, best_distance, best_distances
 
 
